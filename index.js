@@ -1,4 +1,4 @@
-window.TINYCHAT_ROOT = "/tinychat-wgpu/";
+window.TINYCHAT_ROOT = "/tinychat/";
 window.MODEL_BASE_URL= "https://huggingface.co/datasets/hooved/llama-3-2-1B-f32/resolve/main";
 const queryParams = new URLSearchParams(window.location.search);
 const normalizedParams = Object.fromEntries([...queryParams].map(([key, value]) => [key.toUpperCase(), value.toUpperCase()]));
@@ -216,11 +216,11 @@ function sendMessageToWorker(worker, message) {
     // if message.data is a [k, v] from Object.entries(state_dict)
     else if (message.header === "k_v") {worker.postMessage(message.data, [message.data[1].bytes.buffer]);}
     // if message.data is the decompressed state_dict
-    else if (message.header === "state_dict") {worker.postMessage(message.data, Object.values(message.data).map(({ bytes }) => bytes.buffer));}
+    else if (message.header === "state_dict") {worker.postMessage(message.data, Object.values(message.data).flatMap(({ bytes }) => bytes ? [bytes.buffer] : []));}
   });
 }
 
-async function decompress(compressedBuffers, state_dict, device, progress) {
+async function decompress(state_dict, device, progress) {
   let totalLoaded = 0;
   let totalSize = Object.values(state_dict).filter(item => item.dtype === "Q6_K").reduce((sum, item) => sum + item.size, 0);
   const numCheckpoints = 90;
@@ -314,9 +314,12 @@ async function decompress(compressedBuffers, state_dict, device, progress) {
     await Promise.all(gpuJobs);
   } 
   else if (window.BACKEND == "WASM") {
-    delete state_dict["tok_embeddings.weight"]; // uses same data as output.weight
+    state_dict["output.weight"] = state_dict["tok_embeddings.weight"]; // buffer is the same; clang export code prioritized output.weight
+    delete state_dict["tok_embeddings.weight"];
 
-    const num_decomposers = navigator.hardwareConcurrency - 1;
+    // current source weights have everything int8 quantized or float32; only output.weight is decompressed from Q6_K. 
+    // we could make this faster with more workers, but only takes 2-3 sec
+    const num_decomposers = 1
     const workers = Array.from({ length: num_decomposers }, () => new Worker(`./worker.js?version=${Date.now()}`));
     const promises = workers.map(async (worker) => {
       await sendMessageToWorker(worker, {header: "setup", data: "decompress"}); // setup flag, worker can only do decompression now
@@ -416,7 +419,8 @@ const getAndDecompressGGUFChunks = async (device, progress) => {
   }
 
   const correctHashes = data.metadata.chunks.map(chunk => chunk.hash)
-  const compressedBuffers = await Promise.all(data.metadata.chunks.map(chunk => getPart(chunk.name, chunk.hash)));
+  // TODO: process one file at a time to minimize overhead
+  const files = await Promise.all(data.metadata.chunks.map(chunk => getPart(chunk.name, chunk.hash)));
 
   // delete unused cached buffers to free disk space -- if we update weights, user will otherwise have obsolete cached buffers
   const dbKeys = await getAllKeysFromDb(db);
@@ -424,70 +428,45 @@ const getAndDecompressGGUFChunks = async (device, progress) => {
   const notInCorrectHashes = dbKeys.filter(key => !correctHashesSet.has(key));
   for (const hash of notInCorrectHashes) {deleteTensorFromDb(db, hash);}
 
-  for (let i = 0; i < compressedBuffers.length; i++) {
-    compressedBuffers[i] = new Uint8Array(compressedBuffers[i]);
-    saveTensorToDb(db, correctHashes[i], compressedBuffers[i]);
-  }
+  // TODO: load each chunk directly to WebGPU buffers, for mobile
 
   // load state_dict with weights
   // split weights into one ArrayBuffer per weight, necessary for zero-copy hand-off of individual weights to separate workers
-  // copy out weights from one parent buffer at a time, then delete the parent buffer, to minimize memory overhead
-  const chunked_state_dict = Array.from({ length: compressedBuffers.length }, () => []);
-  Object.entries(state_dict).forEach(([k, v]) => {
-    chunked_state_dict[v.chunk].push([k, v]);
-  });
-  for (let i = 0; i < compressedBuffers.length; i++) {
-    for (const [k, v] of chunked_state_dict[i]) {
-      state_dict[k].bytes = compressedBuffers[i].slice(v.start_pos, v.start_pos + v.size);
-    }
-    compressedBuffers[i] = null;
-  }
-
-  await decompress(compressedBuffers, state_dict, device, progress);
-
-  // TODO: refactor WebGPU backend to only use state_dict instead of decompressedBuffers; probably can get rid of below stuff
-  if (window.BACKEND === "WebGPU") {
-    // FFD bin packing
-    const maxChunkSize = 1149173760; // byte size of float32 output.weight in llama-1B
-    const chunks = [];
-    const size_sorted_tensors = Object.entries(state_dict)
-      .map(([key, value]) => ({name: key, size: value.size}))
-      .sort((a, b) => b.size - a.size);
-    for (const t of size_sorted_tensors) {
-      let placed = false;
-      for (const chunk of chunks) {
-        const currentSum = chunk.reduce((sum, i) => sum + i.size, 0);
-        if (currentSum + t.size <= maxChunkSize) {
-          chunk.push(t);
-          placed = true;
-          break;
-        }
-      }
-      if (!placed) chunks.push([t]);
-    }
-    progress(0.95, 1.0, "Decompressing model:");
-
-    const decompressedBuffers = [];
-    for (let i=0; i<chunks.length; i++) {
-      const chunk = chunks[i];
-      const chunkSize = chunk.reduce((sum, j) => sum + j.size, 0);
-      decompressedBuffers.push(new Uint8Array(chunkSize));
-      let cursor = 0;
-      for (let j=0; j<chunk.length; j++) {
-        const t = chunk[j];
-        decompressedBuffers[i].set(state_dict[t.name].bytes, cursor);
-        state_dict[t.name].bytes = null;
-        state_dict[t.name].chunk = i;
-        state_dict[t.name].start_pos = cursor;
-        cursor += t.size;
-        if (j % 5 === 0) await new Promise(resolve => setTimeout(resolve, 0)); // prevent browser lag
+  // copy out weights from one file's buffer at a time, then delete the buffer, to minimize memory overhead
+  const parts_by_file = Array.from({ length: files.length }, () => []);
+  for (const [k,v] of Object.entries(state_dict)) {
+    for (const part of v.parts) {
+      if (part.empty) state_dict[k].empty = true; // assumes no other parts of this weight exist and are non-empty
+      else {
+        part.key = k;
+        part.dtype = v.dtype;
+        parts_by_file[part.chunk].push(part);
       }
     }
-
-    progress(1.0, 1.0, "Decompressing model:");
-    return {chunks: decompressedBuffers, metadata: state_dict};
   }
-  else if (window.BACKEND === "WASM") {return {metadata: state_dict};}
+
+  for (let i = 0; i < files.length; i++) {
+    files[i] = new Uint8Array(files[i]);
+    saveTensorToDb(db, correctHashes[i], files[i]);
+    for (const part of parts_by_file[i]) {
+      const whole_weight_size = state_dict[part.key].parts.reduce((sum, part) => sum + part.size, 0);
+      state_dict[part.key].size = whole_weight_size;
+      if (files[i].length === whole_weight_size) {
+        state_dict[part.key].bytes = files[i];
+        continue;
+      }
+      if (!state_dict[part.key].bytes) state_dict[part.key].bytes = new Uint8Array(whole_weight_size);
+      if (!part.empty) {
+        const target = state_dict[part.key].bytes;
+        const source = (files[i].length === part.size) ? files[i] : files[i].slice(part.file_start_pos, part.file_start_pos + part.size);
+        target.set(source, part.target_start_pos);
+      }
+    }
+    files[i] = null;
+  }
+
+  await decompress(state_dict, device, progress);
+  return state_dict;
 };
 
 document.addEventListener("alpine:init", () => {
@@ -526,7 +505,8 @@ document.addEventListener("alpine:init", () => {
       }
 
       try {
-        var tensorData = await getAndDecompressGGUFChunks(device, this.progress.bind(this));
+        //var tensorData = await getAndDecompressGGUFChunks(device, this.progress.bind(this));
+        var state_dict = await getAndDecompressGGUFChunks(device, this.progress.bind(this));
       } catch (error) {this.progress(0, 100, "Error decompressing model"); console.log(error); return;}
 
       var p = 0;
@@ -547,20 +527,15 @@ document.addEventListener("alpine:init", () => {
 
       try {
         p = 40; this.progress(p, 100, `Launching ${window.BACKEND} model:`);
-        // TODO: clean this up
+        await kernelsReady;
         if (window.BACKEND === "WebGPU") {
-          let models = ["transformer"];
-          const args = (window.BACKEND === "WebGPU") ? [device, tensorData.chunks, tensorData.metadata] : [tensorData.metadata];
-          this.nets = await Promise.all([
-                  //transformer().setup(device, tensorData.chunks, tensorData.metadata, this.progress.bind(this)),
-                  transformer().setup(...[...args, this.progress.bind(this)]),
-              ]).then((loadedModels) => loadedModels.reduce((acc, model, index) => { acc[models[index]] = model; return acc; }, {}))
+          const model = await transformer().setup(device, state_dict, this.progress.bind(this));
+          this.nets = {"transformer": model};
         }
         else if (window.BACKEND === "WASM") {
-          await kernelsReady;
           const modelWorker = new Worker(`./worker.js?version=${Date.now()}`);
           let msg = await sendMessageToWorker(modelWorker, {header: "setup", data: "setup_transformer"});
-          msg = await sendMessageToWorker(modelWorker, {header: "state_dict", data: tensorData.metadata});
+          msg = await sendMessageToWorker(modelWorker, {header: "state_dict", data: state_dict});
           this.nets = {"transformer": async (tok, start_pos) => sendMessageToWorker(modelWorker, {header: "token", data: [tok, start_pos]})};
         }
         this.progress(100, 100, `Launching ${window.BACKEND} model:`);
@@ -716,14 +691,14 @@ document.addEventListener("alpine:init", () => {
       prefillToks = prefillToks.slice(startPos);
 
       for (const tok of prefillToks) {
-        if (window.BACKEND === "WebGPU") {await this.nets["transformer"](new Float32Array([[tok]]), startPos);}
+        if (window.BACKEND === "WebGPU") {await this.nets["transformer"](new Int32Array([tok]), new Int32Array([startPos]));}
         else {await this.nets["transformer"](tok, startPos);}
         startPos += 1;
       }
 
       let lastTok = tokens[tokens.length - 1];
       while (true) {
-        if (window.BACKEND === "WebGPU") {var tok = await this.nets["transformer"](new Float32Array([[lastTok]]), startPos); tok = tok[0];}
+        if (window.BACKEND === "WebGPU") {var tok = await this.nets["transformer"](new Int32Array([lastTok]), new Int32Array([startPos])); tok = tok[0];}
         else {var tok = await this.nets["transformer"](lastTok, startPos);}
         this.lastSeenToks.push(lastTok); // lets us skip prefilling with these tokens at the next prompt in this chain
         startPos += 1;
