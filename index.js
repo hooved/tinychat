@@ -1,5 +1,5 @@
-window.TINYCHAT_ROOT = "/";
-window.MODEL_BASE_URL= ".";
+window.TINYCHAT_ROOT = "/tinychat/";
+window.MODEL_BASE_URL= "https://huggingface.co/datasets/hooved/llama-3-2-1B-f32/resolve/main/test3";
 const queryParams = new URLSearchParams(window.location.search);
 const normalizedParams = Object.fromEntries([...queryParams].map(([key, value]) => [key.toUpperCase(), value.toUpperCase()]));
 window.BACKEND = (normalizedParams["BACKEND"] === "WASM") ? "WASM" : "WebGPU";
