@@ -18,7 +18,9 @@ const tiktokenReady = (async () => {
 
 const kernelsReady = (async () => {
   if (window.BACKEND === "WASM") {var exports = await import(`./net_clang.js?version=${Date.now()}`);} // TODO: is cache-busting necessary
-  else if (window.BACKEND === "WebGPU") {var exports = await import(`./net.js?version=${Date.now()}`);}
+  // use shorter context on mobile to decrease memory usage, for more stability
+  else if (window.isMobile && window.BACKEND === "WebGPU") {var exports = await import(`./net_1024.js?version=${Date.now()}`);}
+  else if (!window.isMobile && window.BACKEND === "WebGPU") {var exports = await import(`./net_4096.js?version=${Date.now()}`);}
   Object.assign(self, exports);
 })();
 

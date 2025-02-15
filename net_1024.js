@@ -314,7 +314,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
   var val7 = select(0.0f, data1[alu3], alu5);
   var val8 = select(0.0f, data2[alu2], alu5);
   var alu6 = (gidx0+(start_pos<<9)+alu0);
-  data0[(alu6+2097152)] = val0;
+  data0[(alu6+524288)] = val0;
   data0[alu6] = ((val6*val8)+(val7*val5)+(val3*val1)+(val2*val4*select(0.0f,-1.0f,alu4)));
 }`;
 
@@ -381,41 +381,41 @@ fn inf(a: f32) -> f32 { return a/0.0; }
   data0[alu2] = ((val2*val0)-(val3*val1));
 }`;
 
-const r_28start_pos2B129_32_16_4 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
+const r_32_28start_pos2B129_8_8 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
 fn is_nan(v:f32) -> bool { return min(v, 1.0) == 1.0 && max(v, -1.0) == -1.0; }
 
 fn inf(a: f32) -> f32 { return a/0.0; }
-var<workgroup> temp0: array<f32, 16>;
+var<workgroup> temp0: array<f32, 8>;
 @group(0) @binding(0)var<storage,read_write>data0:array<f32>;
 @group(0) @binding(1)var<storage,read_write>data1:array<f32>;
 @group(0) @binding(2)var<storage,read_write>data2:array<f32>;
 @group(0) @binding(3)var<uniform>start_pos:i32;
-@compute @workgroup_size(16) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
-  var gidx0 = i32(gindex.x); /* 32 */
-  var gidx1 = i32(gindex.y); /* UOp(Ops.ADD, dtypes.int, arg=None, src=(
-  UOp(Ops.DEFINE_VAR, dtypes.int, arg=('start_pos', 0, 4096), src=()),
+@compute @workgroup_size(8) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
+  var gidx0 = i32(gindex.x); /* UOp(Ops.ADD, dtypes.int, arg=None, src=(
+  UOp(Ops.DEFINE_VAR, dtypes.int, arg=('start_pos', 0, 1024), src=()),
   UOp(Ops.CONST, dtypes.int, arg=1, src=()),)) */
-  var lidx0 = i32(lindex.x); /* 16 */
+  var gidx1 = i32(gindex.y); /* 32 */
+  var lidx0 = i32(lindex.x); /* 8 */
   var acc0 = 0.0f;
-  for (var ridx0 = 0; ridx0 < 4; ridx0++) {
-    var alu0 = (ridx0<<4);
-    var val0 = data1[(lidx0+(gidx0<<6)+alu0)];
-    var val1 = data2[(lidx0+alu0+((((gidx1<<3)+(gidx0>>2))%((start_pos<<3)+8))<<6))];
+  for (var ridx0 = 0; ridx0 < 8; ridx0++) {
+    var alu0 = (ridx0<<3);
+    var val0 = data1[(lidx0+(gidx1<<6)+alu0)];
+    var val1 = data2[(lidx0+alu0+((((gidx0<<3)+(gidx1>>2))%((start_pos<<3)+8))<<6))];
     acc0 = (acc0+(val0*val1));
   }
   temp0[lidx0] = acc0;
   workgroupBarrier();
   if (((bool(lidx0))!=true)) {
     var acc1 = 0.0f;
-    for (var ridx1 = 0; ridx1 < 16; ridx1++) {
+    for (var ridx1 = 0; ridx1 < 8; ridx1++) {
       var val2 = temp0[ridx1];
       acc1 = (acc1+val2);
     }
-    data0[(gidx1+(gidx0*(start_pos+1)))] = (acc1*0.125f);
+    data0[(gidx0+(gidx1*(start_pos+1)))] = (acc1*0.125f);
   }
 }`;
 
-const r_16_28start_pos2B129_2 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
+const r_8_28start_pos2B129_4 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
 fn is_nan(v:f32) -> bool { return min(v, 1.0) == 1.0 && max(v, -1.0) == -1.0; }
 
 fn inf(a: f32) -> f32 { return a/0.0; }
@@ -423,22 +423,30 @@ fn inf(a: f32) -> f32 { return a/0.0; }
 @group(0) @binding(1)var<storage,read_write>data1:array<f32>;
 @group(0) @binding(2)var<uniform>start_pos:i32;
 @compute @workgroup_size(1) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
-  var gidx0 = i32(gindex.x); /* 16 */
+  var gidx0 = i32(gindex.x); /* 8 */
   var acc0 = (f32(-inf(1.0)));
   var acc1 = (f32(-inf(1.0)));
+  var acc2 = (f32(-inf(1.0)));
+  var acc3 = (f32(-inf(1.0)));
   for (var ridx0 = 0; ridx0 < (start_pos+1); ridx0++) {
-    var alu0 = ((gidx0*((start_pos<<1)+2))+ridx0);
+    var alu0 = ((gidx0*((start_pos<<2)+4))+ridx0);
     var val0 = data1[alu0];
     var val1 = data1[(start_pos+alu0+1)];
+    var val2 = data1[(alu0+(start_pos*3)+3)];
+    var val3 = data1[(alu0+(start_pos<<1)+2)];
     acc0 = select(acc0,val0,(acc0<val0));
     acc1 = select(acc1,val1,(acc1<val1));
+    acc2 = select(acc2,val3,(acc2<val3));
+    acc3 = select(acc3,val2,(acc3<val2));
   }
-  var alu4 = (gidx0<<1);
-  data0[alu4] = acc0;
-  data0[(alu4+1)] = acc1;
+  var alu6 = (gidx0<<2);
+  data0[alu6] = acc0;
+  data0[(alu6+1)] = acc1;
+  data0[(alu6+2)] = acc2;
+  data0[(alu6+3)] = acc3;
 }`;
 
-const r_16_28start_pos2B129_2n1 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
+const r_16_28start_pos2B129_2 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
 fn is_nan(v:f32) -> bool { return min(v, 1.0) == 1.0 && max(v, -1.0) == -1.0; }
 
 fn inf(a: f32) -> f32 { return a/0.0; }
@@ -476,7 +484,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
 @group(0) @binding(4)var<uniform>start_pos:i32;
 @compute @workgroup_size(1) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
   var gidx0 = i32(gindex.x); /* UOp(Ops.ADD, dtypes.int, arg=None, src=(
-  UOp(Ops.DEFINE_VAR, dtypes.int, arg=('start_pos', 0, 4096), src=()),
+  UOp(Ops.DEFINE_VAR, dtypes.int, arg=('start_pos', 0, 1024), src=()),
   UOp(Ops.CONST, dtypes.int, arg=1, src=()),)) */
   var gidx1 = i32(gindex.y); /* 16 */
   var alu0 = (gidx0+(gidx1*((start_pos<<1)+2)));
@@ -493,7 +501,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
   data0[alu1] = (exp2(((val1-val4)*1.4426950408889634f))*(1/val5));
 }`;
 
-const r_8_64_4_28start_pos2B129 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
+const r_16_64_28start_pos2B129_2 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
 fn is_nan(v:f32) -> bool { return min(v, 1.0) == 1.0 && max(v, -1.0) == -1.0; }
 
 fn inf(a: f32) -> f32 { return a/0.0; }
@@ -501,18 +509,22 @@ fn inf(a: f32) -> f32 { return a/0.0; }
 @group(0) @binding(1)var<storage,read_write>data1:array<f32>;
 @group(0) @binding(2)var<storage,read_write>data2:array<f32>;
 @group(0) @binding(3)var<uniform>start_pos:i32;
-@compute @workgroup_size(4) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
+@compute @workgroup_size(1) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
   var gidx0 = i32(gindex.x); /* 64 */
-  var gidx1 = i32(gindex.y); /* 8 */
-  var lidx0 = i32(lindex.x); /* 4 */
-  var alu0 = (start_pos+1);
+  var gidx1 = i32(gindex.y); /* 16 */
   var acc0 = 0.0f;
-  for (var ridx0 = 0; ridx0 < alu0; ridx0++) {
-    var val0 = data1[((gidx1*((start_pos<<2)+4))+(lidx0*alu0)+ridx0)];
-    var val1 = data2[(gidx0+(((gidx1+(ridx0<<3))%((start_pos<<3)+8))<<6)+2097152)];
-    acc0 = (acc0+(val0*val1));
+  var acc1 = 0.0f;
+  for (var ridx0 = 0; ridx0 < (start_pos+1); ridx0++) {
+    var alu0 = ((gidx1*((start_pos<<1)+2))+ridx0);
+    var val0 = data1[alu0];
+    var val1 = data1[(start_pos+alu0+1)];
+    var val2 = data2[(gidx0+((((ridx0<<3)+(gidx1>>1))%((start_pos<<3)+8))<<6)+524288)];
+    acc0 = (acc0+(val2*val0));
+    acc1 = (acc1+(val2*val1));
   }
-  data0[(gidx0+(gidx1<<8)+(lidx0<<6))] = acc0;
+  var alu4 = (gidx0+(gidx1<<7));
+  data0[alu4] = acc0;
+  data0[(alu4+64)] = acc1;
 }`;
 
 const r_512_16_128_4 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
@@ -1627,18 +1639,18 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_11 = createEmptyBuf(device, 2048);
    const buf_12 = createWeightBuf(device, 1048576, state_dict['layers.0.attention.wv.weight']);
    const buf_13 = createWeightBuf(device, 2048, state_dict['layers.0.attention.wv.scale']);
-   const buf_14 = createEmptyBuf(device, 16777216);
-   const buf_15 = createWeightBuf(device, 2097152, state_dict['freqs_cis']);
+   const buf_14 = createEmptyBuf(device, 4194304);
+   const buf_15 = createWeightBuf(device, 524288, state_dict['freqs_cis']);
    const buf_16 = createEmptyBuf(device, 8192);
    await new Promise(resolve => setTimeout(resolve, 0));
    progress(0.005 * progress.total, 'Loading model:');
    const buf_17 = createWeightBuf(device, 4194304, state_dict['layers.0.attention.wq.weight']);
    const buf_18 = createWeightBuf(device, 8192, state_dict['layers.0.attention.wq.scale']);
    const buf_19 = createEmptyBuf(device, 8192);
-   const buf_20 = createEmptyBuf(device, 524416);
+   const buf_20 = createEmptyBuf(device, 131200);
    const buf_21 = createEmptyBuf(device, 128);
    const buf_22 = createEmptyBuf(device, 128);
-   const buf_23 = createEmptyBuf(device, 524416);
+   const buf_23 = createEmptyBuf(device, 131200);
    const buf_24 = createWeightBuf(device, 4194304, state_dict['layers.0.attention.wo.weight']);
    const buf_25 = createWeightBuf(device, 8192, state_dict['layers.0.attention.wo.scale']);
    const buf_26 = createWeightBuf(device, 8192, state_dict['layers.0.ffn_norm.weight']);
@@ -1661,7 +1673,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_41 = createEmptyBuf(device, 2048);
    const buf_42 = createWeightBuf(device, 1048576, state_dict['layers.1.attention.wv.weight']);
    const buf_43 = createWeightBuf(device, 2048, state_dict['layers.1.attention.wv.scale']);
-   const buf_44 = createEmptyBuf(device, 16777216);
+   const buf_44 = createEmptyBuf(device, 4194304);
    const buf_45 = createWeightBuf(device, 4194304, state_dict['layers.1.attention.wq.weight']);
    const buf_46 = createWeightBuf(device, 8192, state_dict['layers.1.attention.wq.scale']);
    const buf_47 = createWeightBuf(device, 4194304, state_dict['layers.1.attention.wo.weight']);
@@ -1684,7 +1696,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_62 = createEmptyBuf(device, 2048);
    const buf_63 = createWeightBuf(device, 1048576, state_dict['layers.2.attention.wv.weight']);
    const buf_64 = createWeightBuf(device, 2048, state_dict['layers.2.attention.wv.scale']);
-   const buf_65 = createEmptyBuf(device, 16777216);
+   const buf_65 = createEmptyBuf(device, 4194304);
    const buf_66 = createWeightBuf(device, 4194304, state_dict['layers.2.attention.wq.weight']);
    const buf_67 = createWeightBuf(device, 8192, state_dict['layers.2.attention.wq.scale']);
    const buf_68 = createWeightBuf(device, 4194304, state_dict['layers.2.attention.wo.weight']);
@@ -1707,7 +1719,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_83 = createEmptyBuf(device, 2048);
    const buf_84 = createWeightBuf(device, 1048576, state_dict['layers.3.attention.wv.weight']);
    const buf_85 = createWeightBuf(device, 2048, state_dict['layers.3.attention.wv.scale']);
-   const buf_86 = createEmptyBuf(device, 16777216);
+   const buf_86 = createEmptyBuf(device, 4194304);
    const buf_87 = createWeightBuf(device, 4194304, state_dict['layers.3.attention.wq.weight']);
    const buf_88 = createWeightBuf(device, 8192, state_dict['layers.3.attention.wq.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
@@ -1732,7 +1744,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_106 = createWeightBuf(device, 2048, state_dict['layers.4.attention.wv.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
    progress(0.005 * progress.total, 'Loading model:');
-   const buf_107 = createEmptyBuf(device, 16777216);
+   const buf_107 = createEmptyBuf(device, 4194304);
    const buf_108 = createWeightBuf(device, 4194304, state_dict['layers.4.attention.wq.weight']);
    const buf_109 = createWeightBuf(device, 8192, state_dict['layers.4.attention.wq.scale']);
    const buf_110 = createWeightBuf(device, 4194304, state_dict['layers.4.attention.wo.weight']);
@@ -1755,7 +1767,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_125 = createEmptyBuf(device, 2048);
    const buf_126 = createWeightBuf(device, 1048576, state_dict['layers.5.attention.wv.weight']);
    const buf_127 = createWeightBuf(device, 2048, state_dict['layers.5.attention.wv.scale']);
-   const buf_128 = createEmptyBuf(device, 16777216);
+   const buf_128 = createEmptyBuf(device, 4194304);
    const buf_129 = createWeightBuf(device, 4194304, state_dict['layers.5.attention.wq.weight']);
    const buf_130 = createWeightBuf(device, 8192, state_dict['layers.5.attention.wq.scale']);
    const buf_131 = createWeightBuf(device, 4194304, state_dict['layers.5.attention.wo.weight']);
@@ -1778,7 +1790,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_146 = createEmptyBuf(device, 2048);
    const buf_147 = createWeightBuf(device, 1048576, state_dict['layers.6.attention.wv.weight']);
    const buf_148 = createWeightBuf(device, 2048, state_dict['layers.6.attention.wv.scale']);
-   const buf_149 = createEmptyBuf(device, 16777216);
+   const buf_149 = createEmptyBuf(device, 4194304);
    const buf_150 = createWeightBuf(device, 4194304, state_dict['layers.6.attention.wq.weight']);
    const buf_151 = createWeightBuf(device, 8192, state_dict['layers.6.attention.wq.scale']);
    const buf_152 = createWeightBuf(device, 4194304, state_dict['layers.6.attention.wo.weight']);
@@ -1801,7 +1813,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_167 = createEmptyBuf(device, 2048);
    const buf_168 = createWeightBuf(device, 1048576, state_dict['layers.7.attention.wv.weight']);
    const buf_169 = createWeightBuf(device, 2048, state_dict['layers.7.attention.wv.scale']);
-   const buf_170 = createEmptyBuf(device, 16777216);
+   const buf_170 = createEmptyBuf(device, 4194304);
    const buf_171 = createWeightBuf(device, 4194304, state_dict['layers.7.attention.wq.weight']);
    const buf_172 = createWeightBuf(device, 8192, state_dict['layers.7.attention.wq.scale']);
    const buf_173 = createWeightBuf(device, 4194304, state_dict['layers.7.attention.wo.weight']);
@@ -1824,7 +1836,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_188 = createEmptyBuf(device, 2048);
    const buf_189 = createWeightBuf(device, 1048576, state_dict['layers.8.attention.wv.weight']);
    const buf_190 = createWeightBuf(device, 2048, state_dict['layers.8.attention.wv.scale']);
-   const buf_191 = createEmptyBuf(device, 16777216);
+   const buf_191 = createEmptyBuf(device, 4194304);
    const buf_192 = createWeightBuf(device, 4194304, state_dict['layers.8.attention.wq.weight']);
    const buf_193 = createWeightBuf(device, 8192, state_dict['layers.8.attention.wq.scale']);
    const buf_194 = createWeightBuf(device, 4194304, state_dict['layers.8.attention.wo.weight']);
@@ -1847,7 +1859,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_209 = createEmptyBuf(device, 2048);
    const buf_210 = createWeightBuf(device, 1048576, state_dict['layers.9.attention.wv.weight']);
    const buf_211 = createWeightBuf(device, 2048, state_dict['layers.9.attention.wv.scale']);
-   const buf_212 = createEmptyBuf(device, 16777216);
+   const buf_212 = createEmptyBuf(device, 4194304);
    const buf_213 = createWeightBuf(device, 4194304, state_dict['layers.9.attention.wq.weight']);
    const buf_214 = createWeightBuf(device, 8192, state_dict['layers.9.attention.wq.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
@@ -1872,7 +1884,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_232 = createWeightBuf(device, 2048, state_dict['layers.10.attention.wv.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
    progress(0.005 * progress.total, 'Loading model:');
-   const buf_233 = createEmptyBuf(device, 16777216);
+   const buf_233 = createEmptyBuf(device, 4194304);
    const buf_234 = createWeightBuf(device, 4194304, state_dict['layers.10.attention.wq.weight']);
    const buf_235 = createWeightBuf(device, 8192, state_dict['layers.10.attention.wq.scale']);
    const buf_236 = createWeightBuf(device, 4194304, state_dict['layers.10.attention.wo.weight']);
@@ -1895,7 +1907,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_251 = createEmptyBuf(device, 2048);
    const buf_252 = createWeightBuf(device, 1048576, state_dict['layers.11.attention.wv.weight']);
    const buf_253 = createWeightBuf(device, 2048, state_dict['layers.11.attention.wv.scale']);
-   const buf_254 = createEmptyBuf(device, 16777216);
+   const buf_254 = createEmptyBuf(device, 4194304);
    const buf_255 = createWeightBuf(device, 4194304, state_dict['layers.11.attention.wq.weight']);
    const buf_256 = createWeightBuf(device, 8192, state_dict['layers.11.attention.wq.scale']);
    const buf_257 = createWeightBuf(device, 4194304, state_dict['layers.11.attention.wo.weight']);
@@ -1918,7 +1930,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_272 = createEmptyBuf(device, 2048);
    const buf_273 = createWeightBuf(device, 1048576, state_dict['layers.12.attention.wv.weight']);
    const buf_274 = createWeightBuf(device, 2048, state_dict['layers.12.attention.wv.scale']);
-   const buf_275 = createEmptyBuf(device, 16777216);
+   const buf_275 = createEmptyBuf(device, 4194304);
    const buf_276 = createWeightBuf(device, 4194304, state_dict['layers.12.attention.wq.weight']);
    const buf_277 = createWeightBuf(device, 8192, state_dict['layers.12.attention.wq.scale']);
    const buf_278 = createWeightBuf(device, 4194304, state_dict['layers.12.attention.wo.weight']);
@@ -1941,7 +1953,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_293 = createEmptyBuf(device, 2048);
    const buf_294 = createWeightBuf(device, 1048576, state_dict['layers.13.attention.wv.weight']);
    const buf_295 = createWeightBuf(device, 2048, state_dict['layers.13.attention.wv.scale']);
-   const buf_296 = createEmptyBuf(device, 16777216);
+   const buf_296 = createEmptyBuf(device, 4194304);
    const buf_297 = createWeightBuf(device, 4194304, state_dict['layers.13.attention.wq.weight']);
    const buf_298 = createWeightBuf(device, 8192, state_dict['layers.13.attention.wq.scale']);
    const buf_299 = createWeightBuf(device, 4194304, state_dict['layers.13.attention.wo.weight']);
@@ -1964,7 +1976,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_314 = createEmptyBuf(device, 2048);
    const buf_315 = createWeightBuf(device, 1048576, state_dict['layers.14.attention.wv.weight']);
    const buf_316 = createWeightBuf(device, 2048, state_dict['layers.14.attention.wv.scale']);
-   const buf_317 = createEmptyBuf(device, 16777216);
+   const buf_317 = createEmptyBuf(device, 4194304);
    const buf_318 = createWeightBuf(device, 4194304, state_dict['layers.14.attention.wq.weight']);
    const buf_319 = createWeightBuf(device, 8192, state_dict['layers.14.attention.wq.scale']);
    const buf_320 = createWeightBuf(device, 4194304, state_dict['layers.14.attention.wo.weight']);
@@ -1987,7 +1999,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_335 = createEmptyBuf(device, 2048);
    const buf_336 = createWeightBuf(device, 1048576, state_dict['layers.15.attention.wv.weight']);
    const buf_337 = createWeightBuf(device, 2048, state_dict['layers.15.attention.wv.scale']);
-   const buf_338 = createEmptyBuf(device, 16777216);
+   const buf_338 = createEmptyBuf(device, 4194304);
    const buf_339 = createEmptyBuf(device, 4);
    const buf_340 = createWeightBuf(device, 4194304, state_dict['layers.15.attention.wq.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
@@ -2027,7 +2039,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
     const gpuWriteBuffer1 = device.createBuffer({size:input1.size, usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE });
         const gpuReadBuffer = device.createBuffer({ size: output0.size, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
 
-        const kernels = [r_4_256_32_501_4_4, r_512_256_4, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, E_n2, r_2048_8_16_16, E_n3, E_32_32_2, E_n4, r_28start_pos2B129_32_16_4, r_16_28start_pos2B129_2, r_16_28start_pos2B129_2n1, E_16_28start_pos2B129_2, r_8_64_4_28start_pos2B129, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_16032_2_16_8_4_2_2_4, r_64_501_4, r_64_4, r_128_501_2, r_64_4n1, E_64128_2, r_501_16_256_16, r_167_501_3, r_128_501_2n1, r_64_4n2];
+        const kernels = [r_4_256_32_501_4_4, r_512_256_4, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, r_2048_8_16_16, E_32_32_2, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_512_16_128n1, r_512_16_128n1, E_8_64_2, E_n2, r_2048_8_16_16, E_n3, E_32_32_2, E_n4, r_32_28start_pos2B129_8_8, r_8_28start_pos2B129_4, r_16_28start_pos2B129_2, E_16_28start_pos2B129_2, r_16_64_28start_pos2B129_2, r_512_16_128_4, r_16_128, E_1024_2, r_8192_16_32_4, r_2048_16_8_16_4, r_1024_16_16_32_2, r_16_128, E_1024_2, r_16032_2_16_8_4_2_2_4, r_64_501_4, r_64_4, r_128_501_2, r_64_4n1, E_64128_2, r_501_16_256_16, r_167_501_3, r_128_501_2n1, r_64_4n2];
         
         const piplines = [];
         for (let i=0; i<kernels.length; i++) {
@@ -2060,11 +2072,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[6], [buf_14, buf_8, buf_15, buf_11, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[7], [buf_16, buf_6, buf_17, buf_18], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[8], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[9], [buf_20, buf_19, buf_14, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[10], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[9], [buf_20, buf_19, buf_14, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[10], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[11], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[12], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[13], [buf_16, buf_23, buf_14, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[13], [buf_16, buf_23, buf_14, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[14], [buf_19, buf_4, buf_16, buf_24, buf_25], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[15], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[16], [buf_16, buf_19, buf_5, buf_26], [1024, 1, 1]);
@@ -2078,11 +2090,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[24], [buf_44, buf_38, buf_15, buf_41, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[25], [buf_19, buf_36, buf_45, buf_46], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[26], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[27], [buf_20, buf_16, buf_44, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[28], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[27], [buf_20, buf_16, buf_44, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[28], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[29], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[30], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[31], [buf_19, buf_23, buf_44, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[31], [buf_19, buf_23, buf_44, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[32], [buf_16, buf_33, buf_19, buf_47, buf_48], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[33], [buf_5, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[34], [buf_19, buf_16, buf_5, buf_49], [1024, 1, 1]);
@@ -2096,11 +2108,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[42], [buf_65, buf_59, buf_15, buf_62, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[43], [buf_16, buf_57, buf_66, buf_67], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[44], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[45], [buf_20, buf_19, buf_65, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[46], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[45], [buf_20, buf_19, buf_65, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[46], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[47], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[48], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[49], [buf_16, buf_23, buf_65, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[49], [buf_16, buf_23, buf_65, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[50], [buf_19, buf_54, buf_16, buf_68, buf_69], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[51], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[52], [buf_16, buf_19, buf_5, buf_70], [1024, 1, 1]);
@@ -2114,11 +2126,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[60], [buf_86, buf_80, buf_15, buf_83, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[61], [buf_19, buf_78, buf_87, buf_88], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[62], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[63], [buf_20, buf_16, buf_86, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[64], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[63], [buf_20, buf_16, buf_86, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[64], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[65], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[66], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[67], [buf_19, buf_23, buf_86, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[67], [buf_19, buf_23, buf_86, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[68], [buf_16, buf_75, buf_19, buf_89, buf_90], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[69], [buf_5, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[70], [buf_19, buf_16, buf_5, buf_91], [1024, 1, 1]);
@@ -2132,11 +2144,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[78], [buf_107, buf_101, buf_15, buf_104, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[79], [buf_16, buf_99, buf_108, buf_109], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[80], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[81], [buf_20, buf_19, buf_107, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[82], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[81], [buf_20, buf_19, buf_107, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[82], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[83], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[84], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[85], [buf_16, buf_23, buf_107, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[85], [buf_16, buf_23, buf_107, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[86], [buf_19, buf_96, buf_16, buf_110, buf_111], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[87], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[88], [buf_16, buf_19, buf_5, buf_112], [1024, 1, 1]);
@@ -2150,11 +2162,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[96], [buf_128, buf_122, buf_15, buf_125, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[97], [buf_19, buf_120, buf_129, buf_130], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[98], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[99], [buf_20, buf_16, buf_128, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[100], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[99], [buf_20, buf_16, buf_128, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[100], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[101], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[102], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[103], [buf_19, buf_23, buf_128, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[103], [buf_19, buf_23, buf_128, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[104], [buf_16, buf_117, buf_19, buf_131, buf_132], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[105], [buf_5, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[106], [buf_19, buf_16, buf_5, buf_133], [1024, 1, 1]);
@@ -2168,11 +2180,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[114], [buf_149, buf_143, buf_15, buf_146, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[115], [buf_16, buf_141, buf_150, buf_151], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[116], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[117], [buf_20, buf_19, buf_149, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[118], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[117], [buf_20, buf_19, buf_149, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[118], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[119], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[120], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[121], [buf_16, buf_23, buf_149, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[121], [buf_16, buf_23, buf_149, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[122], [buf_19, buf_138, buf_16, buf_152, buf_153], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[123], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[124], [buf_16, buf_19, buf_5, buf_154], [1024, 1, 1]);
@@ -2186,11 +2198,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[132], [buf_170, buf_164, buf_15, buf_167, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[133], [buf_19, buf_162, buf_171, buf_172], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[134], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[135], [buf_20, buf_16, buf_170, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[136], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[135], [buf_20, buf_16, buf_170, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[136], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[137], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[138], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[139], [buf_19, buf_23, buf_170, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[139], [buf_19, buf_23, buf_170, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[140], [buf_16, buf_159, buf_19, buf_173, buf_174], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[141], [buf_5, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[142], [buf_19, buf_16, buf_5, buf_175], [1024, 1, 1]);
@@ -2204,11 +2216,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[150], [buf_191, buf_185, buf_15, buf_188, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[151], [buf_16, buf_183, buf_192, buf_193], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[152], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[153], [buf_20, buf_19, buf_191, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[154], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[153], [buf_20, buf_19, buf_191, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[154], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[155], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[156], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[157], [buf_16, buf_23, buf_191, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[157], [buf_16, buf_23, buf_191, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[158], [buf_19, buf_180, buf_16, buf_194, buf_195], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[159], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[160], [buf_16, buf_19, buf_5, buf_196], [1024, 1, 1]);
@@ -2222,11 +2234,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[168], [buf_212, buf_206, buf_15, buf_209, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[169], [buf_19, buf_204, buf_213, buf_214], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[170], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[171], [buf_20, buf_16, buf_212, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[172], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[171], [buf_20, buf_16, buf_212, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[172], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[173], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[174], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[175], [buf_19, buf_23, buf_212, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[175], [buf_19, buf_23, buf_212, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[176], [buf_16, buf_201, buf_19, buf_215, buf_216], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[177], [buf_5, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[178], [buf_19, buf_16, buf_5, buf_217], [1024, 1, 1]);
@@ -2240,11 +2252,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[186], [buf_233, buf_227, buf_15, buf_230, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[187], [buf_16, buf_225, buf_234, buf_235], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[188], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[189], [buf_20, buf_19, buf_233, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[190], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[189], [buf_20, buf_19, buf_233, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[190], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[191], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[192], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[193], [buf_16, buf_23, buf_233, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[193], [buf_16, buf_23, buf_233, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[194], [buf_19, buf_222, buf_16, buf_236, buf_237], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[195], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[196], [buf_16, buf_19, buf_5, buf_238], [1024, 1, 1]);
@@ -2258,11 +2270,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[204], [buf_254, buf_248, buf_15, buf_251, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[205], [buf_19, buf_246, buf_255, buf_256], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[206], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[207], [buf_20, buf_16, buf_254, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[208], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[207], [buf_20, buf_16, buf_254, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[208], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[209], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[210], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[211], [buf_19, buf_23, buf_254, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[211], [buf_19, buf_23, buf_254, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[212], [buf_16, buf_243, buf_19, buf_257, buf_258], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[213], [buf_5, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[214], [buf_19, buf_16, buf_5, buf_259], [1024, 1, 1]);
@@ -2276,11 +2288,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[222], [buf_275, buf_269, buf_15, buf_272, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[223], [buf_16, buf_267, buf_276, buf_277], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[224], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[225], [buf_20, buf_19, buf_275, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[226], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[225], [buf_20, buf_19, buf_275, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[226], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[227], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[228], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[229], [buf_16, buf_23, buf_275, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[229], [buf_16, buf_23, buf_275, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[230], [buf_19, buf_264, buf_16, buf_278, buf_279], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[231], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[232], [buf_16, buf_19, buf_5, buf_280], [1024, 1, 1]);
@@ -2294,11 +2306,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[240], [buf_296, buf_290, buf_15, buf_293, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[241], [buf_19, buf_288, buf_297, buf_298], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[242], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[243], [buf_20, buf_16, buf_296, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[244], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[243], [buf_20, buf_16, buf_296, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[244], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[245], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[246], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[247], [buf_19, buf_23, buf_296, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[247], [buf_19, buf_23, buf_296, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[248], [buf_16, buf_285, buf_19, buf_299, buf_300], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[249], [buf_5, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[250], [buf_19, buf_16, buf_5, buf_301], [1024, 1, 1]);
@@ -2312,11 +2324,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[258], [buf_317, buf_311, buf_15, buf_314, input1], [64, 8, 1]);
         addComputePass(device, commandEncoder, piplines[259], [buf_16, buf_309, buf_318, buf_319], [2048, 1, 1]);
         addComputePass(device, commandEncoder, piplines[260], [buf_19, buf_16, buf_15, input1], [32, 32, 1]);
-        addComputePass(device, commandEncoder, piplines[261], [buf_20, buf_19, buf_317, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[262], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[261], [buf_20, buf_19, buf_317, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[262], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[263], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[264], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[265], [buf_16, buf_23, buf_317, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[265], [buf_16, buf_23, buf_317, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[266], [buf_19, buf_306, buf_16, buf_320, buf_321], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[267], [buf_5, buf_19], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[268], [buf_16, buf_19, buf_5, buf_322], [1024, 1, 1]);
@@ -2333,11 +2345,11 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
         addComputePass(device, commandEncoder, piplines[279], [buf_342, buf_339, buf_343], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[280], [buf_16, buf_19, buf_15, input1], [32, 32, 1]);
         addComputePass(device, commandEncoder, piplines[281], [buf_5, buf_339, buf_343], [1, 1, 1]);
-        addComputePass(device, commandEncoder, piplines[282], [buf_20, buf_16, buf_338, input1], [32, data1[0] + 1, 1]);
-        addComputePass(device, commandEncoder, piplines[283], [buf_21, buf_20, input1], [16, 1, 1]);
+        addComputePass(device, commandEncoder, piplines[282], [buf_20, buf_16, buf_338, input1], [data1[0] + 1, 32, 1]);
+        addComputePass(device, commandEncoder, piplines[283], [buf_21, buf_20, input1], [8, 1, 1]);
         addComputePass(device, commandEncoder, piplines[284], [buf_22, buf_20, buf_21, input1], [16, 1, 1]);
         addComputePass(device, commandEncoder, piplines[285], [buf_23, buf_20, buf_21, buf_22, input1], [data1[0] + 1, 16, 1]);
-        addComputePass(device, commandEncoder, piplines[286], [buf_19, buf_23, buf_338, input1], [64, 8, 1]);
+        addComputePass(device, commandEncoder, piplines[286], [buf_19, buf_23, buf_338, input1], [64, 16, 1]);
         addComputePass(device, commandEncoder, piplines[287], [buf_16, buf_327, buf_19, buf_344, buf_345], [512, 1, 1]);
         addComputePass(device, commandEncoder, piplines[288], [buf_346, buf_16], [1, 1, 1]);
         addComputePass(device, commandEncoder, piplines[289], [buf_19, buf_16, buf_346, buf_347], [1024, 1, 1]);
@@ -2369,4 +2381,4 @@ commandEncoder.copyBufferToBuffer(gpuWriteBuffer1, 0, input1, 0, gpuWriteBuffer1
       }
     }
   }
-  
+  export { transformer }
