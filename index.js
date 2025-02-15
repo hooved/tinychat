@@ -6,8 +6,10 @@ const isMobileAgent = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 window.isMobile = isMobileAgent || hasTouchScreen;
 if (window.isMobile) document.documentElement.classList.add('mobile'); // prevent annoying auto-zoom when entering prompt on mobile
-window.MOBILE_MODEL_URL = "https://huggingface.co/datasets/hooved/llama-3-2-1B-f32/resolve/main/mobile";
-window.PC_MODEL_URL = "https://huggingface.co/datasets/hooved/llama-3-2-1B-f32/resolve/main/pc";
+window.PC_MODEL_BASE_URL = "https://huggingface.co/datasets/hooved/llama-3-2-1B-f32/resolve/main/pc";
+window.PC_WEBGPU_EXPORT = './net_4096.js'
+window.MOBILE_MODEL_BASE_URL = "https://huggingface.co/datasets/hooved/llama-3-2-1B-f32/resolve/main/mobile";
+window.MOBILE_WEBGPU_EXPORT = './net_1024.js'
 
 const tiktokenReady = (async () => {
   const { init, get_encoding, Tiktoken, load } = await import('./tiktoken.js');
@@ -386,12 +388,12 @@ document.addEventListener("alpine:init", () => {
         }
       }
 
-      if (window.BACKEND === "WebGPU" && !window.isMobile) window.MODEL_BASE_URL = window.PC_MODEL_URL;
-      else window.MODEL_BASE_URL = window.MOBILE_MODEL_URL;
+      window.MODEL_BASE_URL = (window.BACKEND === "WebGPU" && !window.isMobile) ? window.PC_MODEL_BASE_URL : window.MOBILE_MODEL_BASE_URL;
+
       const kernelsReady = (async () => {
         if (window.BACKEND === "WASM") {var exports = await import(`./net_clang.js?version=${Date.now()}`);} // TODO: is cache-busting necessary
-        else if (window.BACKEND === "WebGPU" && !window.isMobile) {var exports = await import(`./net_4096.js?version=${Date.now()}`);}
-        else if (window.BACKEND === "WebGPU" && window.isMobile) {var exports = await import(`./net_1024.js?version=${Date.now()}`);}
+        else if (window.BACKEND === "WebGPU" && !window.isMobile) {var exports = await import(`${PC_WEBGPU_EXPORT}?version=${Date.now()}`);}
+        else if (window.BACKEND === "WebGPU" && window.isMobile) {var exports = await import(`${MOBILE_WEBGPU_EXPORT}?version=${Date.now()}`);}
         Object.assign(self, exports);
       })();
 
