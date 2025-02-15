@@ -390,7 +390,8 @@ document.addEventListener("alpine:init", () => {
       else window.MODEL_BASE_URL = window.MOBILE_MODEL_URL;
       const kernelsReady = (async () => {
         if (window.BACKEND === "WASM") {var exports = await import(`./net_clang.js?version=${Date.now()}`);} // TODO: is cache-busting necessary
-        else if (window.BACKEND === "WebGPU") {var exports = await import(`${window.MODEL_BASE_URL}/net.js?version=${Date.now()}`);}
+        else if (window.BACKEND === "WebGPU" && !window.isMobile) {var exports = await import(`./net_4096.js?version=${Date.now()}`);}
+        else if (window.BACKEND === "WebGPU" && window.isMobile) {var exports = await import(`./net_1024.js?version=${Date.now()}`);}
         Object.assign(self, exports);
       })();
 
