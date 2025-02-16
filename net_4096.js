@@ -1631,7 +1631,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_15 = createWeightBuf(device, 2097152, state_dict['freqs_cis']);
    const buf_16 = createEmptyBuf(device, 8192);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_17 = createWeightBuf(device, 4194304, state_dict['layers.0.attention.wq.weight']);
    const buf_18 = createWeightBuf(device, 8192, state_dict['layers.0.attention.wq.scale']);
    const buf_19 = createEmptyBuf(device, 8192);
@@ -1651,7 +1651,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_33 = createEmptyBuf(device, 8192);
    const buf_34 = createWeightBuf(device, 16777216, state_dict['layers.0.feed_forward.w2.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_35 = createWeightBuf(device, 8192, state_dict['layers.0.feed_forward.w2.scale']);
    const buf_36 = createEmptyBuf(device, 8192);
    const buf_37 = createWeightBuf(device, 8192, state_dict['layers.1.attention_norm.weight']);
@@ -1671,7 +1671,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_51 = createWeightBuf(device, 32768, state_dict['layers.1.feed_forward.w3.scale']);
    const buf_52 = createWeightBuf(device, 16777216, state_dict['layers.1.feed_forward.w1.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_53 = createWeightBuf(device, 32768, state_dict['layers.1.feed_forward.w1.scale']);
    const buf_54 = createEmptyBuf(device, 8192);
    const buf_55 = createWeightBuf(device, 16777216, state_dict['layers.1.feed_forward.w2.weight']);
@@ -1691,7 +1691,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_69 = createWeightBuf(device, 8192, state_dict['layers.2.attention.wo.scale']);
    const buf_70 = createWeightBuf(device, 8192, state_dict['layers.2.ffn_norm.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_71 = createWeightBuf(device, 16777216, state_dict['layers.2.feed_forward.w3.weight']);
    const buf_72 = createWeightBuf(device, 32768, state_dict['layers.2.feed_forward.w3.scale']);
    const buf_73 = createWeightBuf(device, 16777216, state_dict['layers.2.feed_forward.w1.weight']);
@@ -1711,7 +1711,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_87 = createWeightBuf(device, 4194304, state_dict['layers.3.attention.wq.weight']);
    const buf_88 = createWeightBuf(device, 8192, state_dict['layers.3.attention.wq.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_89 = createWeightBuf(device, 4194304, state_dict['layers.3.attention.wo.weight']);
    const buf_90 = createWeightBuf(device, 8192, state_dict['layers.3.attention.wo.scale']);
    const buf_91 = createWeightBuf(device, 8192, state_dict['layers.3.ffn_norm.weight']);
@@ -1731,7 +1731,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_105 = createWeightBuf(device, 1048576, state_dict['layers.4.attention.wv.weight']);
    const buf_106 = createWeightBuf(device, 2048, state_dict['layers.4.attention.wv.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_107 = createEmptyBuf(device, 16777216);
    const buf_108 = createWeightBuf(device, 4194304, state_dict['layers.4.attention.wq.weight']);
    const buf_109 = createWeightBuf(device, 8192, state_dict['layers.4.attention.wq.scale']);
@@ -1751,7 +1751,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_123 = createWeightBuf(device, 1048576, state_dict['layers.5.attention.wk.weight']);
    const buf_124 = createWeightBuf(device, 2048, state_dict['layers.5.attention.wk.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_125 = createEmptyBuf(device, 2048);
    const buf_126 = createWeightBuf(device, 1048576, state_dict['layers.5.attention.wv.weight']);
    const buf_127 = createWeightBuf(device, 2048, state_dict['layers.5.attention.wv.scale']);
@@ -1771,7 +1771,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_141 = createEmptyBuf(device, 8192);
    const buf_142 = createWeightBuf(device, 8192, state_dict['layers.6.attention_norm.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_143 = createEmptyBuf(device, 2048);
    const buf_144 = createWeightBuf(device, 1048576, state_dict['layers.6.attention.wk.weight']);
    const buf_145 = createWeightBuf(device, 2048, state_dict['layers.6.attention.wk.scale']);
@@ -1791,7 +1791,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_159 = createEmptyBuf(device, 8192);
    const buf_160 = createWeightBuf(device, 16777216, state_dict['layers.6.feed_forward.w2.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_161 = createWeightBuf(device, 8192, state_dict['layers.6.feed_forward.w2.scale']);
    const buf_162 = createEmptyBuf(device, 8192);
    const buf_163 = createWeightBuf(device, 8192, state_dict['layers.7.attention_norm.weight']);
@@ -1811,7 +1811,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_177 = createWeightBuf(device, 32768, state_dict['layers.7.feed_forward.w3.scale']);
    const buf_178 = createWeightBuf(device, 16777216, state_dict['layers.7.feed_forward.w1.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_179 = createWeightBuf(device, 32768, state_dict['layers.7.feed_forward.w1.scale']);
    const buf_180 = createEmptyBuf(device, 8192);
    const buf_181 = createWeightBuf(device, 16777216, state_dict['layers.7.feed_forward.w2.weight']);
@@ -1831,7 +1831,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_195 = createWeightBuf(device, 8192, state_dict['layers.8.attention.wo.scale']);
    const buf_196 = createWeightBuf(device, 8192, state_dict['layers.8.ffn_norm.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_197 = createWeightBuf(device, 16777216, state_dict['layers.8.feed_forward.w3.weight']);
    const buf_198 = createWeightBuf(device, 32768, state_dict['layers.8.feed_forward.w3.scale']);
    const buf_199 = createWeightBuf(device, 16777216, state_dict['layers.8.feed_forward.w1.weight']);
@@ -1851,7 +1851,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_213 = createWeightBuf(device, 4194304, state_dict['layers.9.attention.wq.weight']);
    const buf_214 = createWeightBuf(device, 8192, state_dict['layers.9.attention.wq.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_215 = createWeightBuf(device, 4194304, state_dict['layers.9.attention.wo.weight']);
    const buf_216 = createWeightBuf(device, 8192, state_dict['layers.9.attention.wo.scale']);
    const buf_217 = createWeightBuf(device, 8192, state_dict['layers.9.ffn_norm.weight']);
@@ -1871,7 +1871,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_231 = createWeightBuf(device, 1048576, state_dict['layers.10.attention.wv.weight']);
    const buf_232 = createWeightBuf(device, 2048, state_dict['layers.10.attention.wv.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_233 = createEmptyBuf(device, 16777216);
    const buf_234 = createWeightBuf(device, 4194304, state_dict['layers.10.attention.wq.weight']);
    const buf_235 = createWeightBuf(device, 8192, state_dict['layers.10.attention.wq.scale']);
@@ -1891,7 +1891,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_249 = createWeightBuf(device, 1048576, state_dict['layers.11.attention.wk.weight']);
    const buf_250 = createWeightBuf(device, 2048, state_dict['layers.11.attention.wk.scale']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_251 = createEmptyBuf(device, 2048);
    const buf_252 = createWeightBuf(device, 1048576, state_dict['layers.11.attention.wv.weight']);
    const buf_253 = createWeightBuf(device, 2048, state_dict['layers.11.attention.wv.scale']);
@@ -1911,7 +1911,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_267 = createEmptyBuf(device, 8192);
    const buf_268 = createWeightBuf(device, 8192, state_dict['layers.12.attention_norm.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_269 = createEmptyBuf(device, 2048);
    const buf_270 = createWeightBuf(device, 1048576, state_dict['layers.12.attention.wk.weight']);
    const buf_271 = createWeightBuf(device, 2048, state_dict['layers.12.attention.wk.scale']);
@@ -1931,7 +1931,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_285 = createEmptyBuf(device, 8192);
    const buf_286 = createWeightBuf(device, 16777216, state_dict['layers.12.feed_forward.w2.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_287 = createWeightBuf(device, 8192, state_dict['layers.12.feed_forward.w2.scale']);
    const buf_288 = createEmptyBuf(device, 8192);
    const buf_289 = createWeightBuf(device, 8192, state_dict['layers.13.attention_norm.weight']);
@@ -1951,7 +1951,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_303 = createWeightBuf(device, 32768, state_dict['layers.13.feed_forward.w3.scale']);
    const buf_304 = createWeightBuf(device, 16777216, state_dict['layers.13.feed_forward.w1.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_305 = createWeightBuf(device, 32768, state_dict['layers.13.feed_forward.w1.scale']);
    const buf_306 = createEmptyBuf(device, 8192);
    const buf_307 = createWeightBuf(device, 16777216, state_dict['layers.13.feed_forward.w2.weight']);
@@ -1971,7 +1971,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_321 = createWeightBuf(device, 8192, state_dict['layers.14.attention.wo.scale']);
    const buf_322 = createWeightBuf(device, 8192, state_dict['layers.14.ffn_norm.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_323 = createWeightBuf(device, 16777216, state_dict['layers.14.feed_forward.w3.weight']);
    const buf_324 = createWeightBuf(device, 32768, state_dict['layers.14.feed_forward.w3.scale']);
    const buf_325 = createWeightBuf(device, 16777216, state_dict['layers.14.feed_forward.w1.weight']);
@@ -1991,7 +1991,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_339 = createEmptyBuf(device, 4);
    const buf_340 = createWeightBuf(device, 4194304, state_dict['layers.15.attention.wq.weight']);
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_341 = createWeightBuf(device, 8192, state_dict['layers.15.attention.wq.scale']);
    const buf_342 = createEmptyBuf(device, 4);
    const buf_343 = createEmptyBuf(device, 8);
@@ -2013,7 +2013,7 @@ fn inf(a: f32) -> f32 { return a/0.0; }
    const buf_357 = buf_2;
    const buf_358 = buf_3;
    await new Promise(resolve => setTimeout(resolve, 0));
-   progress(0.005 * progress.total, 'Loading model:');
+   progress(0.005 * progress.total);
    const buf_359 = createEmptyBuf(device, 1024);
    const buf_360 = createEmptyBuf(device, 4);
    const buf_361 = createEmptyBuf(device, 513024);
@@ -2035,8 +2035,8 @@ fn inf(a: f32) -> f32 { return a/0.0; }
           const pipeline = await device.createComputePipelineAsync({layout: "auto", compute: { module: device.createShaderModule({ code: name }), entryPoint: "main" }});
           piplines.push(pipeline);
           if (i % 5 === 0) await new Promise(resolve => setTimeout(resolve, 0)); // prevent browser lag
-          if (i === Math.floor(kernels.length * 1/3)) {progress(0.025 * progress.total, "Loading model:");}
-          if (i === Math.floor(kernels.length * 1/3)) {progress(0.025 * progress.total, "Loading model:");}
+          if (i === Math.floor(kernels.length * 1/3)) {progress(0.025 * progress.total);}
+          if (i === Math.floor(kernels.length * 1/3)) {progress(0.025 * progress.total);}
         }
 
         return async (data0,data1) => {
