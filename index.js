@@ -27,11 +27,11 @@ async function getDevice() {
   try {
     adapter = await navigator.gpu.requestAdapter();
     if (!adapter) {
-      this.loadingMessage = "Loading WASM model (enable WebGPU for more speed):";
+      this.loadingMessage = "Loading (enable WebGPU for speed):";
       throw new Error("No WebGPU adapter found");
     }
   } catch(error) {
-    this.loadingMessage = "Loading WASM model (enable WebGPU for more speed):";
+      this.loadingMessage = "Loading (enable WebGPU for speed):";
     throw error;
   }
   const requiredLimits = {};
@@ -42,7 +42,7 @@ async function getDevice() {
   try {
     return await adapter.requestDevice({ requiredLimits });
   } catch(error) {
-    this.loadingMessage = "Loading WASM model (WebGPU launch failed):";
+    this.loadingMessage = "Loading WASM (WebGPU error):";
     throw error;
   }
 };
