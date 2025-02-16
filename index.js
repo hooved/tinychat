@@ -27,11 +27,11 @@ async function getDevice() {
   try {
     adapter = await navigator.gpu.requestAdapter();
     if (!adapter) {
-      this.loadingMessage = "Loading (enable WebGPU for speed):";
+      this.loadingMessage = "Loading WASM (WebGPU not enabled):";
       throw new Error("No WebGPU adapter found");
     }
   } catch(error) {
-      this.loadingMessage = "Loading (enable WebGPU for speed):";
+      this.loadingMessage = "Loading WASM (WebGPU not enabled):";
     throw error;
   }
   const requiredLimits = {};
@@ -676,7 +676,7 @@ document.addEventListener("alpine:init", () => {
       this.lastSeenToks = prefillToks.slice(0, startPos);
 
       this.progress = makeProgress(unprocessedPrefillToks.length);
-      this.loadingMessage = `Reading input:`;
+      this.loadingMessage = (window.BACKEND === "WebGPU") ? "Reading input:" : "Loading (enable WebGPU for speed):";
       this.progress(0, this.loadingMessage);
       for (const tok of unprocessedPrefillToks) {
         if (this.cancelGeneration) {this.loadingMessage=""; return;}
